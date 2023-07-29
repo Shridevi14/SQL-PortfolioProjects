@@ -1,0 +1,84 @@
+/* Who is the senior most employee based on job title?*/
+
+Select First_name,Last_name,title 
+from Employee
+order by Levels 
+Fetch First 1 Rows Only;
+
+
+
+/*Which countries have the most Invoices?*/
+Select count(*) as Count_of_Invoices, Billing_country
+from Invoice
+group by Billing_country
+order by Count_of_invoices Desc;
+
+
+
+/*What are top 3 values of total invoice?*/
+Select total
+from invoice
+order by total desc
+Fetch First 3 Rows Only;
+
+
+
+/*Which city has the best customers? We would like to throw a promotional Music 
+Festival in the city we made the most money. Write a query that returns one city that 
+has the highest sum of invoice totals. Return both the city name & sum of all invoice 
+totals*/
+Select Billing_City,sum(total) as Sum_Invoice_total from invoice
+group by Billing_city
+order by sum_Invoice_total desc
+Fetch first 1 rows only;
+
+
+
+/*Who is the best customer? The customer who has spent the most money will be 
+declared the best customer. Write a query that returns the person who has spent the 
+most money*/
+Select customer.customer_Id,first_name,last_name,SUM(TOTAL) as total_spending 
+from customer
+inner join invoice on customer.customer_id = invoice.customer_id
+group by invoice.customer_id
+order by total_spending desc
+fetch first 1 rows only;
+
+
+
+/*Write query to return the email, first name, last name, & Genre of all Rock Music 
+listeners. Return your list ordered alphabetically by email starting with A*/
+Select first_name,last_name,email
+from customer c
+join invoice i on c.customer_id=i.customer_id
+join invoice_line on i.invoice_id=invoice_line.invoice_id
+join track on invoice_line.track_id=track.track_id
+join genre on track.genre_id=genre.genre_id
+where genre.name='Rock'
+order by email;
+
+
+
+/*Let's invite the artists who have written the most rock music in our dataset. Write a 
+query that returns the Artist name and total track count of the top 10 rock bands*/
+Select a.artist_id,a.name,count(a.artist_id) as no_of_songs
+from artist a
+join album on a.artist_id=album.artist_id
+join track on track.album_id=album.album_id
+join genre on genre.genre_id=track.genre_id
+where genre.name='Rock'
+group by a.artist_id
+order by no_of_songs
+fetch first 10 rows only;
+
+
+
+/*Return all the track names that have a song length longer than the average song length. 
+Return the Name and Milliseconds for each track. Order by the song length with the 
+longest songs listed firs*/
+select name,milliseconds
+from track
+where milliseconds >(
+                     select avg(milliseconds)as avg_track_length
+                     from track)
+order by milliseconds desc;
